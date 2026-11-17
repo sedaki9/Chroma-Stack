@@ -1,0 +1,39 @@
+name: Build ChromaStack
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Package
+        run: |
+          mkdir out
+          VST3=$(find build -name "ChromaStack.vst3" -type d | head -n 1)
+          AU=$(find build -name "ChromaStack.component" -type d | head -n 1)
+          ditto -c -k --keepParent "$VST3" out/ChromaStack-VST3-macOS.zip
+          ditto -c -k --keepParent "$AU" out/ChromaStack-AU-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ChromaStack-macOS
+          path: out
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -B build
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ChromaStack-Windows
+          path: build/ChromaStack_artefacts/Release/VST3/ChromaStack.vst3
