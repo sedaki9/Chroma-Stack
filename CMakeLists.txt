@@ -50,8 +50,4 @@ target_compile_definitions(ChromaStack PUBLIC
 
 target_link_libraries(ChromaStack
     PRIVATE
-        juce::juce_audio_utils
-    PUBLIC
-        juce::juce_recommended_config_flags
-        juce::juce_recommended_lib_flags
-        juce::juce_recommended_warning_flags)
+        juce::juce_audio_utils)
